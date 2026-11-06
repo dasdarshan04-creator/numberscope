@@ -1,6 +1,6 @@
 # 🔎 NumberScope — Mobile Number OSINT Lab
 
-> A local-first, **privacy-respecting** tool for inspecting the *public numbering-plan metadata* behind a phone number — with a clean Streamlit UI, a headless CLI, batch analysis, exportable reports, and a synthetic trilateration teaching demo.
+> A **privacy-respecting** tool for inspecting the *public numbering-plan metadata* behind a phone number — with a clean Streamlit UI, a headless CLI, a REST API, batch analysis, exportable reports, and a synthetic trilateration teaching demo. It makes **no third-party lookups** and runs on **offline** metadata.
 
 <p>
   <img alt="Python" src="https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white">
@@ -10,7 +10,7 @@
   <img alt="Tests" src="https://img.shields.io/badge/tests-13%20passing-brightgreen">
   <img alt="Lint" src="https://img.shields.io/badge/lint-ruff-informational">
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue">
-  <img alt="Processing" src="https://img.shields.io/badge/processing-100%25%20local-success">
+  <img alt="Lookups" src="https://img.shields.io/badge/third--party%20lookups-none-success">
 </p>
 
 <!-- After you push to GitHub, this badge goes live automatically (replace OWNER/REPO):
@@ -133,7 +133,7 @@ This project is intentionally bounded. It will **not**:
 - ❌ identify a subscriber, or confirm a SIM is active/reachable;
 - ❌ reveal a phone's live or GPS location;
 - ❌ query cell sites, carriers, SS7/Diameter, or any data broker;
-- ❌ send network requests or persist any number you enter.
+- ❌ make any third-party lookup, or persist a number you enter.
 
 **Interpretation limits you should always apply:**
 
@@ -142,6 +142,19 @@ This project is intentionally bounded. It will **not**:
 - A *valid range* does **not** prove a number is allocated, active, or owned by anyone.
 
 > Real-time location from a phone number requires privileged carrier signalling or on-device GPS **with consent**, and in most jurisdictions is released only to law enforcement under lawful process. Services claiming to "track any number live" are typically scams or unlawful. Use NumberScope only with numbers you own or are authorised to assess.
+
+### 🔒 Local vs. hosted — where your input is processed
+
+The analysis logic itself never contacts a third party. **But where that logic *runs* depends on how you deploy it:**
+
+| | Run locally (`streamlit run app.py`, CLI, or self-hosted) | Hosted (e.g. Streamlit Community Cloud) |
+|---|---|---|
+| Where numbers are processed | On **your own machine** — they never leave it. | On the **host's servers** — the number is sent over the network and processed in memory there. |
+| Third-party lookups | None | None |
+| Saved by this app | No | No |
+| In the host's operational logs? | N/A | Possibly — outside this app's control. |
+
+**Bottom line:** a *hosted* instance is convenient for a demo, but it is **not "local" to the person typing a number**. For privacy-sensitive use, run it locally or self-host (the included `Dockerfile` makes that easy). The hosted demo is best exercised with your own or clearly synthetic test numbers.
 
 ---
 
@@ -153,7 +166,7 @@ This project is intentionally bounded. It will **not**:
 2. Go to [share.streamlit.io](https://share.streamlit.io) → **New app** → pick your repo.
 3. Set **Main file path** to `app.py` and click **Deploy**. Streamlit installs `requirements.txt` automatically — no other config needed.
 
-You'll get a public `https://<your-app>.streamlit.app` URL to drop straight into your LinkedIn post.
+You'll get a public `https://<your-app>.streamlit.app` URL to drop straight into your LinkedIn post. Note that a hosted app processes entered numbers on the host's servers — see [Local vs. hosted](#-local-vs-hosted--where-your-input-is-processed) — so demo it with your own or synthetic numbers.
 
 **API / full stack:** deploy `Dockerfile` (or `docker-compose.yml`) to any container host — Render, Railway, Fly.io, or a VPS.
 

@@ -41,14 +41,22 @@ st.set_page_config(
 # ---- Header ---------------------------------------------------------------
 st.title("🔎 NumberScope")
 st.caption(
-    "Mobile Number OSINT Analyser · 100% local processing · "
+    "Mobile Number OSINT Analyser · offline metadata, no third-party lookups · "
     f"libphonenumber metadata `{metadata_version()}`"
 )
 st.info(
-    "This tool reads **public numbering-plan metadata only**. It cannot identify a "
-    "subscriber, confirm a SIM is active, or reveal a phone's live location. "
-    "Use it only with numbers you own or are authorised to assess.",
+    "This tool reads **public numbering-plan metadata only** — no subscriber lookup, "
+    "no live location, no external APIs. It cannot identify a subscriber, confirm a "
+    "SIM is active, or reveal a phone's live location. Use it only with numbers you "
+    "own or are authorised to assess.",
     icon="🛡️",
+)
+st.caption(
+    "ℹ️ **Where your input is processed:** run locally (`streamlit run app.py`) and "
+    "numbers never leave your machine. On a **hosted** deployment (e.g. Streamlit "
+    "Cloud), the app runs on the host's servers, so a number you enter is sent over "
+    "the network and processed in memory there, and may appear in the host's logs. "
+    "This app never saves numbers itself, but a hosted instance is not 'local' to you."
 )
 
 tab_analyse, tab_batch, tab_learn, tab_demo, tab_ethics = st.tabs(
@@ -403,6 +411,17 @@ with tab_ethics:
         "- ❌ No requests to lookup websites, data brokers, or third-party APIs.\n"
         "- ❌ No phone numbers written to a database or saved by this app.\n"
         "- ✅ Only offline numbering-plan metadata from libphonenumber."
+    )
+    st.markdown("### Local vs. hosted — where processing happens")
+    st.markdown(
+        "- **Run locally** (`streamlit run app.py`): numbers are parsed on your own "
+        "machine and never leave it.\n"
+        "- **Hosted** (Streamlit Cloud / any server): the app process runs on the "
+        "host, so an entered number is transmitted to and processed on their "
+        "infrastructure and may appear in their operational logs. No third-party "
+        "lookup is ever made, and this app saves nothing — but a hosted instance is "
+        "not 'local' to the person typing the number.\n"
+        "- For the most privacy-sensitive use, run locally or self-host."
     )
     st.markdown("### Responsible-use checklist")
     st.markdown(
